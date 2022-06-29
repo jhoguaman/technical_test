@@ -4,11 +4,11 @@ Simulación de un proceso de CI/CD en github actions.
 
 ## Consideraciónes
 
-- Repositorio: github
-- Estrategia de Git: Modelo de branching - Git Flow
-- Aplicación: App en node.js
-- Entorno: Se simulan dos instancias EC2 para desarrollo y producción
-- Despliegue: Las actualización realizadas en la rama develop serán desplegadas en la instancia de desarrollo, mientras que la main en producción.
+- Repositorio: github.
+- Estrategia de Git: Modelo de branching - Git Flow.
+- Aplicación: App en java maven.
+- Entorno: Se simulan dos instancias EC2 para desarrollo y producción.
+- Despliegue: Las actualizaciones realizadas en la rama **develop** serán desplegadas en la instancia para desarrollo, mientras que las correspondientes a la rama **master** se desplegará en producción.
 
 ### Descripción
 
