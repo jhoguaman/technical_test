@@ -1,0 +1,54 @@
+name: pipeline develop
+
+on:
+  push:
+    branches: ["develop"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment: DEV
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "adopt"
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots package
+
+      - name: docker login
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USERNAME}}/app-test
+
+      - name: Docker Push
+        run: docker push ${{secrets.DOCKER_USERNAME}}/app-test
+
+  deploy:
+    name: deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment: DEV
+
+    steps:
+      - name: Docker Pull and run from Hub
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.AWS_DNS}}
+          username: ubuntu
+          key: ${{secrets.AWS_PK}}
+          envs: GITHUB_SHA
+          script: |
+            sudo docker pull ${{secrets.DOCKER_USERNAME}}/app-test
+            sudo docker stop app-test
+            sudo docker rm app-test
+            sudo docker run --detach -p 3000:3000 --name app-test ${{secrets.DOCKER_USERNAME}}/app-test
