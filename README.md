@@ -6,14 +6,18 @@ Simulación de un proceso de CI/CD en github actions.
 
 - Repositorio: github
 - Estrategia de Git: Modelo de branching - Git Flow
-- Aplicación: App en node.js
+- Aplicación: java maven
 - Entorno: Se simulan dos instancias EC2 para desarrollo y producción
-- Despliegue: Las actualización realizadas en la rama develop serán desplegadas en la instancia de desarrollo, mientras que la main en producción.
+- Despliegue: Las actualizaciones realizadas en la rama **develop** serán desplegadas en la instancia para desarrollo, mientras que las actualizaciones de la rama **master** en producción.
 
 ### Descripción
 
-El proceso de CI/CD realizado en github actions se compone de las pipelines _pipeline-dev.yml_ y _pipeline-prod.yml_ las cuales se ejecutan cuando las ramas **develop** y **main** son actualizadas.
+El proceso de CI/CD realizado en github actions se compone de las pipelines _pipeline-dev.yml_ y _pipeline-prod.yml_ las cuales se ejecutan cuando las ramas **develop** y **master** son actualizadas.
 
-El pipeline respectivo construye la imagen app-test o app-prod y la almacena en el repositorio [Dockerhub](https://hub.docker.com/u/jhoguaman).
+El pipeline respectivo procede en tres etapas: **test**, **build** y **deploy**.
 
-Finalmente la imagen es desplegada en la instancia EC2 correspondiente a las ramas [develop](http://44.204.171.106:3000/hello/dev) y [production](http://3.89.218.218:3000/hello/prod).
+En la estapa de **test** se realizan las pruebas unitarias donde se valida que la salida de la aplicación sea igual a _Hello World!_, caso contrario las mismas fallarán.
+
+La etapa de **build** construirá la imagen app-test o app-prod y la almacenará en el repositorio [Dockerhub](https://hub.docker.com/u/jhoguaman).
+
+Finalmente la etapa **deploy** desplegará la aplicación en la instancia EC2 correspondiente a las ramas **develop** y **master**.
