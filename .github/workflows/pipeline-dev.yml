@@ -58,4 +58,4 @@ jobs:
             sudo docker pull ${{secrets.DOCKER_USERNAME}}/app-test
             sudo docker stop app-test
             sudo docker rm app-test
-            sudo docker run --detach  --name app-test ${{secrets.DOCKER_USERNAME}}/app-test
+            sudo docker run --detach -p 3000:3000 --name app-test ${{secrets.DOCKER_USERNAME}}/app-test
